@@ -1,0 +1,94 @@
+import random
+
+
+# Function to generate a random number between 1 and 21
+def random_generated():
+    return random.randint(1, 21)
+
+
+# Function to add two numbers
+def addition(f_num, s_num):
+    return f_num + s_num
+
+
+# Initialize player's hand with two random cards
+first_num = random_generated()
+second_num = random_generated()
+player_list = [first_num, second_num]
+total = addition(first_num, second_num)  # Fix here to add both numbers correctly
+print(f"Your initial cards: {player_list}, current total: {total}")
+
+# Initialize computer's hand and score
+computer_list = []
+computer_num = 0
+
+
+# Function to handle the computer's logic
+def computer_logic():
+    global computer_num
+    global computer_list
+
+    # Computer continues to draw cards until it reaches or exceeds player's total but is <= 21
+    while computer_num <= total and computer_num < 21:
+        new_computer_rand = random_generated()
+
+        # If a card is 11 and would cause the total to exceed 21, count it as 1 instead
+        if new_computer_rand == 11 and (computer_num + 11) > 21:
+            new_computer_rand = 1
+
+        computer_list.append(new_computer_rand)
+        computer_num += new_computer_rand
+
+        # Print the computer's current total after each draw
+        print(f"Computer drew: {new_computer_rand}, current total: {computer_num}")
+
+    # Determine the winner based on game logic
+    if computer_num > 21:
+        return f"Computer's final hand: {computer_list}, final score: {computer_num}\nComputer exceeded 21. You win!"
+    elif computer_num == total:
+        return f"Computer's final hand: {computer_list}, final score: {computer_num}\nIt's a draw!"
+    elif computer_num >= total:
+        return f"Computer's final hand: {computer_list}, final score: {computer_num}\nComputer wins!"
+    else:
+        return f"Computer's final hand: {computer_list}, final score: {computer_num}\nYou win!"
+
+
+# Main logic for the game
+def logic():
+    global total
+    play_game = input("Do you want to play blackjack? Type 'y' for yes and 'n' for no: ").lower()
+    if play_game == "y":
+        print(f"Your cards: {player_list}, current total: {total}")
+        print(f"Computer's first card: {random_generated()}")  # Show one computer card as a teaser
+
+        # Allow player to draw additional cards
+        while True:
+            user_play = input("Type 'y' to get another card, type 'n' to pass: ").lower()
+            if user_play == "y":
+                new_card = random_generated()
+                if new_card == 11 and (total + 11) > 21:
+                    new_card = 1
+                player_list.append(new_card)
+                total += new_card
+                print(f"Your new card: {new_card}, current total: {total}")
+
+                if total > 21:
+                    print("You exceeded 21. Computer wins!")
+                    return
+
+            elif user_play == "n":
+                # If player passes, call computer logic to determine the winner
+                result = computer_logic()
+                print(result)
+                return
+            else:
+                print("Invalid input, please type 'y' or 'n'.")
+
+    elif play_game == "n":
+        print("Game ended.")
+    else:
+        print("Invalid input. Please enter 'y' or 'n'.")
+
+
+# Start the game
+logic()
